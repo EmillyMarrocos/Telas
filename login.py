@@ -4,6 +4,11 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import Screen
+from kivy.core.window import Window
+import requests
+import json
+
+Window.size = (360, 640)
 
 class TelaLogin(Screen):
     def __init__(self, **kwargs):
@@ -16,9 +21,12 @@ class TelaLogin(Screen):
         # Ícone de perfil centralizado
         image_layout = BoxLayout(size_hint_y=None, height=150, padding=[50, 0, 50, 0], spacing=10)
         image_layout.add_widget(Label())  # Espaço em branco à esquerda do ícone
-        image_layout.add_widget(Image(source='/Users/emill/Documents/Telas/img/img_icon.png', size_hint=(None, None), size=(100, 100)))
+        image_layout.add_widget(Image(source="/Users/aluno.sesipaulista/Documents/Telas/img/img_icon.png", size_hint=(None, None), size=(100, 100)))
         image_layout.add_widget(Label())  # Espaço em branco à direita do ícone
         layout.add_widget(image_layout)
+        
+        title_label = Label(text='LOGIN', font_size=24, color=(0, 0, 0, 1), size_hint_y=None, height=40)
+        layout.add_widget(title_label)
 
         # Email
         self.email = TextInput(hint_text='E-mail', multiline=False, font_size=20, size_hint_y=None, height=40)
@@ -29,7 +37,7 @@ class TelaLogin(Screen):
         layout.add_widget(self.senha)
 
         # Botão de login
-        btn_login = Button(text='LOGIN', size_hint_y=None, height=40, font_size=16)
+        btn_login = Button(text='ENTRAR', size_hint_y=None, height=40, font_size=16)
         btn_login.bind(on_press=self.login)
         layout.add_widget(btn_login)
 
@@ -49,11 +57,24 @@ class TelaLogin(Screen):
         email = self.email.text
         senha = self.senha.text
 
-        # Verificação de login (exemplo simples)
-        if email == 'usuario@email.com' and senha == 'senha123':
-            self.error_label.text = 'Login bem-sucedido!'
-        else:
-            self.error_label.text = 'Credenciais inválidas'
+        data = {
+            'Email': email,
+            'Senha': senha
+        }
+
+        link = "https://telasbd-default-rtdb.firebaseio.com/"
+        try:
+            requisicao = requests.post('{}/Login/.json'.format(link), data=json.dumps(data))
+            resposta = requisicao.json()
+
+            if requisicao.status_code == 200 and resposta:
+                email == 'usuario@email.com' and senha == 'senha123'
+                self.error_label.text = 'Login bem-sucedido!'
+            else:
+                self.error_label.text = 'Credenciais inválidas'
+
+        except requests.RequestException as e:
+            print('Erro ao conectar ao servidor: {}'.format(e))
 
     def ir_para_cadastro(self, instance):
         self.manager.current = 'CADASTRO'

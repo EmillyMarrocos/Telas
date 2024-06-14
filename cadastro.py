@@ -4,6 +4,11 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import Screen
+from kivy.core.window import Window
+import requests
+import json
+
+Window.size = (360, 640)
 
 class TelaCadastro(Screen):
 
@@ -17,9 +22,12 @@ class TelaCadastro(Screen):
         # Ícone de perfil centralizado
         image_layout = BoxLayout(size_hint_y=None, height=150, padding=[50, 0, 50, 0], spacing=10)
         image_layout.add_widget(Label())  # Espaço em branco à esquerda do ícone
-        image_layout.add_widget(Image(source='/Users/emill/Documents/Telas/img/img_icon.png', size_hint=(None, None), size=(100, 100)))
+        image_layout.add_widget(Image(source="/Users/aluno.sesipaulista/Documents/Telas/img/img_icon.png", size_hint=(1, None), size=(100, 100)))
         image_layout.add_widget(Label())  # Espaço em branco à direita do ícone
         layout.add_widget(image_layout)
+
+        title_label = Label(text='CADASTRO', font_size=24, color=(0, 0, 0, 1), size_hint_y=None, height=40)
+        layout.add_widget(title_label)
 
         # Email
         self.email = TextInput(hint_text='E-mail', multiline=False, font_size=20, size_hint_y=None, height=40)
@@ -47,8 +55,12 @@ class TelaCadastro(Screen):
         email = self.email.text
         senha = self.senha.text
 
-        # Verificação de cadastro (exemplo simples)
-        if email and senha:
+        dados = {'Email': email, 'Senha': senha}
+
+        link = "https://telasbd-default-rtdb.firebaseio.com/"
+        requisicao = requests.post('{}/Cadastro/.json'.format(link), data=json.dumps(dados))
+
+        if requisicao.status_code == 200:
             self.error_label.text = 'Cadastro bem-sucedido!'
         else:
             self.error_label.text = 'Por favor, preencha todos os campos'
