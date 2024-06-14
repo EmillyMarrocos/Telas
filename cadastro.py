@@ -1,61 +1,49 @@
-from kivy.app import App 
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivy.uix.image import Image
-from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.core.window import Window
+from kivy.uix.screenmanager import Screen
 
-Window.clearcolor = (0.6, 0.8, 1, 1) #Cor Azul Claro
+class TelaCadastro(Screen):
 
-class TelaCadastro(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.manager = kwargs.get('manager')  # Recebendo o ScreenManager como argumento
 
-        #Layout principal vertical
-        self.orientation = "vertical"
-        self.spacing = 20
-        self.padding = [50, 50]
+        # Definindo o layout principal
+        layout = BoxLayout(orientation='vertical', padding=[50, 50, 50, 50], spacing=20)
+        self.add_widget(layout)
 
-        #Ícone
-        self.icon = Image(source="/Users/aluno.sesipaulista/Documents/Telas/img/img_icon.jpeg", size_hint=(None, None), size=(100,100))
-        self.add_widget(self.icon)
+        # Adicionando o ícone de perfil centralizado
+        image_layout = BoxLayout(size_hint_y=None, height=150, padding=[50, 0, 50, 0], spacing=10)
+        image_layout.add_widget(Label())  # Espaço em branco à esquerda do ícone
+        image_layout.add_widget(Image(source='/Users/emill/Documents/Telas/img/img_icon.png', size_hint=(None, None), size=(100, 100)))
+        image_layout.add_widget(Label())  # Espaço em branco à direita do ícone
+        layout.add_widget(image_layout)
 
-        #Email
-        self.email = TextInput(hint_text="Email", multiline=False, font_size=20)
-        self.add_widget(self.email)
+        # Campo de entrada de e-mail
+        self.email = TextInput(hint_text='E-mail', multiline=False, font_size=20, size_hint_y=None, height=40)
+        layout.add_widget(self.email)
 
-        #Senha
-        self.senha = TextInput(hint_text="Senha", multiline=False, password=True, font_size=20)
-        self.add_widget(self.senha)
+        # Campo de entrada de senha
+        self.senha = TextInput(hint_text='Senha', multiline=False, password=True, font_size=20, size_hint_y=None, height=40)
+        layout.add_widget(self.senha)
 
-        #Botão de Cadastro
-        self.botao_cadastro = Button(text="Cadastrar", size_hint=(None, None), size=(150, 50), font_size=20)
-        self.botao_cadastro.bind(on_press=self.cadastro)
-        self.add_widget(self.botao_cadastro)
+        # Botão de cadastro
+        btn_cadastrar = Button(text='CADASTRAR', size_hint_y=None, height=40)
+        btn_cadastrar.bind(on_press=self.cadastrar)
+        layout.add_widget(btn_cadastrar)
 
-        #Mensagens de erro
-        self.error_label = Label(text= '', color=(1, 0, 0, 1), font_size=16)
-    
-    def load_image(self, instance):
-        #Carregar a imagem de perfil
-        pass
+        # Botão para acessar a tela de login
+        btn_login = Button(text='LOGIN', size_hint_y=None, height=40)
+        btn_login.bind(on_press=self.ir_para_login)
+        layout.add_widget(btn_login)
 
-    def cadastro(self, instance):
-        email = self.email.text
-        senha = self.senha.text
+        # Label para mensagens de erro
+        self.error_label = Label(text='', color=(1, 0, 0, 1), font_size=14)
+        layout.add_widget(self.error_label)
 
-        #Verificação
-        if email and senha:
-            self.error_label.text = "Cadastro realizado com sucesso!"
-        else:
-            self.error_label.text = "Preencha todos os campos"
-
-class AppCadastro(App):
-    def build(self):
-        return TelaCadastro
-    
-if __name__ == "__main__":
-    AppCadastro().run()
+    def cadastrar(self, instance):
+        email = self.email
+        senha = self.senha
