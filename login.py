@@ -6,41 +6,42 @@ from kivy.uix.image import Image
 from kivy.uix.screenmanager import Screen
 
 class TelaLogin(Screen):
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.manager = kwargs.get('manager')  # Recebendo o ScreenManager como argumento
 
-        # Definindo o layout principal
+        # Layout principal
         layout = BoxLayout(orientation='vertical', padding=[50, 50, 50, 50], spacing=20)
         self.add_widget(layout)
 
-        # Adicionando o ícone de perfil centralizado
+        # Ícone de perfil centralizado
         image_layout = BoxLayout(size_hint_y=None, height=150, padding=[50, 0, 50, 0], spacing=10)
         image_layout.add_widget(Label())  # Espaço em branco à esquerda do ícone
         image_layout.add_widget(Image(source='/Users/emill/Documents/Telas/img/img_icon.png', size_hint=(None, None), size=(100, 100)))
         image_layout.add_widget(Label())  # Espaço em branco à direita do ícone
         layout.add_widget(image_layout)
 
-        # Campo de entrada de e-mail
+        # Email
         self.email = TextInput(hint_text='E-mail', multiline=False, font_size=20, size_hint_y=None, height=40)
         layout.add_widget(self.email)
 
-        # Campo de entrada de senha
+        # Senha
         self.senha = TextInput(hint_text='Senha', multiline=False, password=True, font_size=20, size_hint_y=None, height=40)
         layout.add_widget(self.senha)
 
         # Botão de login
-        btn_login = Button(text='LOGIN', size_hint_y=None, height=40)
+        btn_login = Button(text='LOGIN', size_hint_y=None, height=40, font_size=16)
         btn_login.bind(on_press=self.login)
         layout.add_widget(btn_login)
 
-        # Botão para acessar a tela de cadastro
-        btn_cadastro = Button(text='CADASTRAR', size_hint_y=None, height=40)
+        # Botões "Cadastrar" e "Login"
+        button_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=10)
+        btn_cadastro = Button(text='CADASTRE-SE', font_size=14)
         btn_cadastro.bind(on_press=self.ir_para_cadastro)
-        layout.add_widget(btn_cadastro)
+        button_layout.add_widget(btn_cadastro)
+        
+        layout.add_widget(button_layout)
 
-        # Label para mensagens de erro
+        # Mensagens de erro
         self.error_label = Label(text='', color=(1, 0, 0, 1), font_size=14)
         layout.add_widget(self.error_label)
 
@@ -48,7 +49,7 @@ class TelaLogin(Screen):
         email = self.email.text
         senha = self.senha.text
 
-        # Lógica básica de verificação de login (exemplo simples)
+        # Verificação de login (exemplo simples)
         if email == 'usuario@email.com' and senha == 'senha123':
             self.error_label.text = 'Login bem-sucedido!'
         else:
